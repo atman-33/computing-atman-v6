@@ -1,0 +1,90 @@
+# GraphQL YOGA、Prisma、Pothosセットアップ
+
+## 参考URL
+
+- [PrismaとPothosでコード生成を使いながら効率よくGraphQLサーバーを作ってみる](https://zenn.dev/poyochan/articles/9f22799853784d)
+
+## ステップ
+
+### 開発用DB構築
+
+`tools/database-local/setup-docker-mongo-single-replica.md`を参考にMongoDBを構築する。  
+
+### Prismaセットアップ
+
+```sh
+npm i -D prisma
+npx prisma init
+```
+
+`prisma/schema.prisma`
+
+```s
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLIC
+}
+
+model User {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  email String @unique
+  name  String
+  role  Role   @default(MEMBER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  password Password?
+  posts    Post[]
+}
+
+model Password {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  hashed String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id      String     @id @default(auto()) @map("_id") @db.ObjectId
+  title   String
+  content String
+  status  PostStatus @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  authorId String @db.ObjectId
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+```
+
+- Prisma Client を生成する。  
+
+```sh
+npx prisma generate
+```

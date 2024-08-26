@@ -1,6 +1,6 @@
-# Graphqlセットアップ
+# GraphQL YOGAセットアップ
 
-- Graphqlサーバー: GraphQL Yoga
+- GraphQLサーバー: GraphQL Yoga
 
 ## ステップ
 
@@ -10,7 +10,7 @@
 npm i graphql graphql-yoga
 ```
 
-### Graphqlサーバーのエンドポイントを作成
+### GraphQLサーバーのエンドポイントを作成
 
 `app/routes/api.graphql/route.ts`
 

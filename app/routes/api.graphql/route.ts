@@ -25,11 +25,11 @@ const yoga = createYoga({
 });
 
 export async function action({ request, context }: ActionFunctionArgs) {
-  const response = await yoga.handleRequest(request);
+  const response = await yoga.handleRequest(request, context);
   return new Response(response.body, response);
 }
 
 export async function loader({ request, context }: LoaderFunctionArgs) {
-  const response = await yoga.handleRequest(request);
+  const response = await yoga.handleRequest(request, context);
   return new Response(response.body, response);
 }

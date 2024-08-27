@@ -1,4 +1,4 @@
-# GraphQL YOGA、Prisma、Pothosセットアップ
+# MongoDB、Prisma（schema, seed）セットアップ
 
 ## 参考URL
 
@@ -6,7 +6,7 @@
 
 ## ステップ
 
-### 開発用DB構築
+### 開発用DB（MongoDB）構築
 
 `tools/database-local/setup-docker-mongo-single-replica.md`を参考にMongoDBを構築する。  
 

@@ -1,23 +1,24 @@
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
-import { createSchema, createYoga } from 'graphql-yoga';
+import { createYoga } from 'graphql-yoga';
+import { schema } from '~/graphql.server/schema';
 
 // Define your schema and resolvers
-const typeDefs = /* GraphQL */ `
-  type Query {
-    hello: String
-  }
-`;
+// const typeDefs = /* GraphQL */ `
+//   type Query {
+//     hello: String
+//   }
+// `;
 
-const resolvers = {
-  Query: {
-    hello: () => 'Hello from Yoga!',
-  },
-};
+// const resolvers = {
+//   Query: {
+//     hello: () => 'Hello from Yoga!',
+//   },
+// };
 
-const schema = createSchema({
-  typeDefs,
-  resolvers,
-});
+// const schema = createSchema({
+//   typeDefs,
+//   resolvers,
+// });
 
 const yoga = createYoga({
   schema,

@@ -99,6 +99,7 @@ builder.prismaNode('User', {
 `app/graphql.server/schema/user/user.queries.ts`
 
 ```ts
+import { decodeGlobalID } from '@pothos/plugin-relay';
 import { prisma } from '~/lib/prisma.server';
 import { builder } from '../../builder';
 
@@ -114,9 +115,10 @@ builder.queryFields((t) => ({
     },
     // フィールドの解決関数
     resolve: (query, _, args) => {
+      const { id: rawId } = decodeGlobalID(args.id); // Relay 形式のグローバルID をデコードしてDBのIDの形式を取り出す
       return prisma.user.findUnique({
         ...query, // Prismaのクエリオブジェクトを展開して使用（フィルタリング、ソートなど）
-        where: { id: args.id }, // ユーザーのIDで検索
+        where: { id: rawId }, // ユーザーのIDで検索
       });
     },
   }),
@@ -138,6 +140,7 @@ builder.queryFields((t) => ({
 `app/graphql.server/schema/user/user.mutations.ts`
 
 ```ts
+import { decodeGlobalID } from '@pothos/plugin-relay';
 import { prisma } from '~/lib/prisma.server';
 import { hashPassword } from '~/utils/password-utils';
 import { builder } from '../../builder';
@@ -185,10 +188,11 @@ builder.mutationFields((t) => ({
         ? await hashPassword(args.input.password)
         : undefined;
 
+      const { id: rawId } = decodeGlobalID(args.input.id); // Relay 形式のグローバルID をデコードしてDBのIDの形式を取り出す
       // ユーザー情報を更新
       const updatedUser = await prisma.user.update({
         ...query, // Prismaのクエリオブジェクトを展開して使用
-        where: { id: args.input.id }, // 更新対象のユーザーIDで検索
+        where: { id: rawId }, // 更新対象のユーザーIDで検索
         data: {
           name: args.input.name ?? undefined, // 'name' を更新（指定されていない場合は更新しない）
           email: args.input.email ?? undefined, // 'email' を更新（指定されていない場合は更新しない）
@@ -199,7 +203,7 @@ builder.mutationFields((t) => ({
       // 'password' が指定されている場合、Passwordモデルを更新
       if (hashedPassword) {
         await prisma.password.upsert({
-          where: { userId: args.input.id }, // ユーザーIDで検索
+          where: { userId: rawId }, // ユーザーIDで検索
           update: { hashed: hashedPassword }, // 既存レコードがある場合は更新
           create: { userId: args.input.id, hashed: hashedPassword }, // ない場合は新規作成
         });
@@ -222,9 +226,10 @@ builder.mutationFields((t) => ({
     },
     // フィールドの解決関数
     resolve: async (query, _, args) => {
+      const { id: rawId } = decodeGlobalID(args.input.id); // Relay 形式のグローバルID をデコードしてDBのIDの形式を取り出す
       return prisma.user.delete({
         ...query, // Prismaのクエリオブジェクトを展開して使用
-        where: { id: args.input.id }, // 削除対象のユーザーIDで検索
+        where: { id: rawId }, // 削除対象のユーザーIDで検索
       });
     },
   }),

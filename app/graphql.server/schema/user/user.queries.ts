@@ -1,3 +1,4 @@
+import { decodeGlobalID } from '@pothos/plugin-relay';
 import { prisma } from '~/lib/prisma.server';
 import { builder } from '../../builder';
 
@@ -13,9 +14,10 @@ builder.queryFields((t) => ({
     },
     // フィールドの解決関数
     resolve: (query, _, args) => {
+      const { id: rawId } = decodeGlobalID(args.id); // Relay 形式のグローバルID をデコードしてDBのIDの形式を取り出す
       return prisma.user.findUnique({
         ...query, // Prismaのクエリオブジェクトを展開して使用（フィルタリング、ソートなど）
-        where: { id: args.id }, // ユーザーのIDで検索
+        where: { id: rawId }, // ユーザーのIDで検索
       });
     },
   }),

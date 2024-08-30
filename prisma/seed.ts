@@ -1,15 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { PostStatus, PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
-
-// NOTE: プロジェクト内のファイルをimportするとエラーになるため注意
+import { hashPassword } from '~/utils/password-utils';
 
 console.log('🚀 prisma seed start...');
-
-const hashPassword = (rawPassword: string) => {
-  const saltRounds = 10;
-  return bcrypt.hash(rawPassword, saltRounds);
-};
 
 const prisma = new PrismaClient();
 

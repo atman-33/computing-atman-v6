@@ -14,7 +14,7 @@
     "db:push:dev": "npx env-cmd -f .env npx prisma db push",
     "db:generate": "npx env-cmd -f .env npx prisma generate",
     "db:studio": "npx env-cmd -f .env npx prisma studio",
-    "db:seed": "npx env-cmd -f .env node --loader ts-node/esm --no-warnings=ExperimentalWarning prisma/seed.ts",
+    "db:seed": "npx tsx prisma/seed.ts",
     "---- TEST SECTION ----": "---- ---- ---- ---- ----",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
@@ -75,6 +75,7 @@
     "prisma": "^5.18.0",
     "storybook": "^8.2.9",
     "tailwindcss": "^3.4.4",
+    "tsx": "^4.19.0",
     "typescript": "^5.1.6",
     "vite": "^5.1.0",
     "vite-tsconfig-paths": "^4.2.1"

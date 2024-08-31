@@ -1,6 +1,6 @@
 import { decodeGlobalID } from '@pothos/plugin-relay';
 import { prisma } from '~/lib/prisma.server';
-import { hashPassword } from '~/utils/password-utils';
+import { hashPassword } from '~/utils/auth-utils';
 import { builder } from '../../builder';
 
 // ユーザーロールを定義

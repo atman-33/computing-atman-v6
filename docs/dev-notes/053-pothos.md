@@ -96,7 +96,7 @@ builder.prismaNode('User', {
 
 #### クエリフィールドを実装
 
-`app/graphql.server/schema/user/user.queries.ts`
+`app/graphql.server/schema/user/user.query.ts`
 
 ```ts
 import { decodeGlobalID } from '@pothos/plugin-relay';
@@ -137,12 +137,12 @@ builder.queryFields((t) => ({
 
 #### ミューテーションフィールドを実装
 
-`app/graphql.server/schema/user/user.mutations.ts`
+`app/graphql.server/schema/user/user.mutation.ts`
 
 ```ts
 import { decodeGlobalID } from '@pothos/plugin-relay';
 import { prisma } from '~/lib/prisma.server';
-import { hashPassword } from '~/utils/password-utils';
+import { hashPassword } from '~/utils/auth-utils';
 import { builder } from '../../builder';
 
 // ユーザーロールを定義

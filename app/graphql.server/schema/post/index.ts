@@ -1,2 +1,2 @@
 import './post.node';
-import './post.queries';
+import './post.query';

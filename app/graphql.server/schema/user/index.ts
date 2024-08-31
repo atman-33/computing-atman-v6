@@ -1,3 +1,3 @@
-import './user.mutations';
+import './user.mutation';
 import './user.node';
-import './user.queries';
+import './user.query';

@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { PostStatus, PrismaClient } from '@prisma/client';
-import { hashPassword } from '~/utils/password-utils';
+import { hashPassword } from '~/utils/auth-utils';
 
 console.log('🚀 prisma seed start...');
 

@@ -109,7 +109,7 @@ export const builder = new SchemaBuilder<{
 });
 ```
 
-`app/graphql.server/schema/auth/login.mutation.ts`
+`app/graphql.server/schema/auth/auth.mutation.ts`
 
 - ログインMutationの戻り値のObjectの定義とログインMutationの処理を追加
 

@@ -9,6 +9,12 @@ const LoginType = builder.simpleObject('Login', {
   }),
 });
 
+const LogoutType = builder.simpleObject('Logout', {
+  fields: (t) => ({
+    success: t.boolean({ nullable: false }),
+  }),
+});
+
 builder.mutationFields((t) => ({
   login: t.field({
     type: LoginType,
@@ -34,8 +40,19 @@ builder.mutationFields((t) => ({
       }
 
       const token = jwtSign(userWithPassword.id);
+      // クッキーストアに認証トークンをセット
       await ctx.request.cookieStore?.set(CookieKeys.authToken, token);
       return { token };
+    },
+  }),
+  logout: t.field({
+    type: LogoutType,
+    resolve: async (_, __, ctx) => {
+      // クッキーストアから認証トークンを削除
+      await ctx.request.cookieStore?.delete(CookieKeys.authToken);
+
+      // 成功レスポンスを返す
+      return { success: true };
     },
   }),
 }));

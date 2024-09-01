@@ -1,3 +1,4 @@
+import { decodeGlobalID } from '@pothos/plugin-relay';
 import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { useCookies } from '@whatwg-node/server-plugin-cookies';
 import { createYoga } from 'graphql-yoga';
@@ -6,6 +7,7 @@ import { schema } from '~/graphql.server/schema';
 import { prisma } from '~/lib/prisma.server';
 import { jwtVerify } from '~/utils/auth-utils';
 
+// NOTE: createYogaで生成したインスタンスはシングルトンとして利用される。
 const yoga = createYoga({
   schema, // スキーマとリゾルバーを定義
   graphqlEndpoint: '/api/graphql', // GraphQL のエンドポイントを指定
@@ -17,8 +19,9 @@ const yoga = createYoga({
       return { ...ctx };
     }
     const auth = jwtVerify(authToken);
+    const { id: rawId } = decodeGlobalID(auth.sub!); // sub: JWTトークンを識別する一意の識別子。ユーザーIDを格納している。
     const user = await prisma.user.findUnique({
-      where: { id: auth.sub! }, // sub: JWTトークンを識別する一意の識別子。ユーザーIDを格納している。
+      where: { id: rawId },
     });
     return { ...ctx, user };
   },

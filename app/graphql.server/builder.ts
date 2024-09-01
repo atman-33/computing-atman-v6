@@ -3,6 +3,8 @@ import PrismaPlugin from '@pothos/plugin-prisma';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import RelayPlugin from '@pothos/plugin-relay';
 // eslint-disable-next-line import/no-named-as-default
+import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
+// eslint-disable-next-line import/no-named-as-default
 import PothosSimpleObjectsPlugin from '@pothos/plugin-simple-objects';
 import { Prisma } from '@prisma/client';
 import { DateTimeResolver } from 'graphql-scalars';
@@ -16,14 +18,27 @@ export const builder = new SchemaBuilder<{
       Output: Date;
     };
   };
+  AuthScopes: {
+    loggedIn: boolean;
+    member: boolean;
+    admin: boolean;
+  };
   Connection: {
     totalCount: number | (() => number | Promise<number>);
   };
   PrismaTypes: PrismaTypes;
   Context: Context;
 }>({
-  plugins: [PrismaPlugin, RelayPlugin, PothosSimpleObjectsPlugin],
-  // relayOptions: {},
+  plugins: [ScopeAuthPlugin, PrismaPlugin, RelayPlugin, PothosSimpleObjectsPlugin],
+  scopeAuth: {
+    authorizeOnSubscribe: true,
+    authScopes: async (ctx) => ({
+      loggedIn: !!ctx.user,
+      admin: ctx.user?.role === 'ADMIN',
+      member: ctx.user?.role === 'MEMBER',
+    }),
+  },
+  relay: {},
   prisma: {
     client: prisma,
     dmmf: Prisma.dmmf,

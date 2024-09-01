@@ -39,6 +39,7 @@ builder.mutationFields((t) => ({
         required: true,
       }),
     },
+    authScopes: { loggedIn: true },
     // フィールドの解決関数
     resolve: async (query, _, args) => {
       // 'password' の更新が指定された場合はハッシュ化（例: bcrypt など）

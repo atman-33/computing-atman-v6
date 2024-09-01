@@ -58,7 +58,7 @@ export const builder = new SchemaBuilder<{
   PrismaTypes: PrismaTypes;
 }>({
   plugins: [PrismaPlugin, RelayPlugin],
-  // relayOptions: {},
+  relay: {},
   prisma: {
     client: prisma,
     dmmf: Prisma.dmmf,

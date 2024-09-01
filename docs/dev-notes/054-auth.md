@@ -1,4 +1,4 @@
-# ログイン処理
+# Auth処理（ログイン、ログアウト、認可処理）
 
 ## ステップ
 
@@ -76,7 +76,7 @@ export const builder = new SchemaBuilder<{
 + Context: Context;
 }>({
   plugins: [PrismaPlugin, RelayPlugin],
-  // relayOptions: {},
+  relay: {},
   prisma: {
     client: prisma,
     dmmf: Prisma.dmmf,
@@ -101,7 +101,7 @@ export const builder = new SchemaBuilder<{
   Context: Context;
 }>({
 + plugins: [PrismaPlugin, RelayPlugin, PothosSimpleObjectsPlugin],
-  // relayOptions: {},
+  relay: {},
   prisma: {
     client: prisma,
     dmmf: Prisma.dmmf,
@@ -176,8 +176,9 @@ const yoga = createYoga({
       return { ...ctx };
     }
     const auth = jwtVerify(authToken);
+    const { id: rawId } = decodeGlobalID(auth.sub!); // sub: JWTトークンを識別する一意の識別子。ユーザーIDを格納している。
     const user = await prisma.user.findUnique({
-      where: { id: auth.sub! }, // sub: JWTトークンを識別する一意の識別子。ユーザーIDを格納している。
+      where: { id: rawId },
     });
     return { ...ctx, user };
   },
@@ -185,4 +186,76 @@ const yoga = createYoga({
 });
 ```
 
-// TODO: 認可処理を追加
+### 認可処理を追加
+
+`app/graphql.server/builder.ts`
+
+- AutoScopesを追加
+- pluginsに、ScopeAuthPluginを追加
+- scopeAuthを追加
+
+```ts
+// ...
+// eslint-disable-next-line import/no-named-as-default
+import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
+
+export const builder = new SchemaBuilder<{
+  // ...
+  AuthScopes: {
+    loggedIn: boolean;
+    member: boolean;
+    admin: boolean;
+  };
+}>({
+  plugins: [ScopeAuthPlugin, PrismaPlugin, RelayPlugin, PothosSimpleObjectsPlugin],
+  scopeAuth: {
+    authorizeOnSubscribe: true,
+    authScopes: async (ctx) => ({
+      loggedIn: !!ctx.user,
+      admin: ctx.user?.role === 'ADMIN',
+      member: ctx.user?.role === 'MEMBER',
+    }),
+  },
+  // ...
+});
+```
+
+- フィールドに対してスコープを設定する。
+
+`app/graphql.server/schema/user/user.node.ts`
+
+```ts
+builder.prismaNode('User', {
+  id: { field: 'id' }, 
+  fields: (t) => ({
+    name: t.exposeString('name'), 
+    email: t.exposeString('email', {
+      authScopes: { admin: true, member: true },  // 追加
+    }),
+    role: t.exposeString('role'),
+    posts: t.relatedConnection('posts', {
+      cursor: 'id', 
+      totalCount: true, 
+    }),
+  }),
+});
+```
+
+- QueryやMutationに対してスコープを設定する。
+
+`app/graphql.server/schema/user/user.mutation.ts`
+
+```ts
+builder.mutationFields((t) => ({
+  updateUser: t.prismaField({
+    type: 'User', 
+    nullable: true, 
+    args: {
+      input: t.arg({
+        type: UpdateUserInput,
+        required: true,
+      }),
+    },
+    authScopes: { loggedIn: true }, // 追加
+    // ...
+```

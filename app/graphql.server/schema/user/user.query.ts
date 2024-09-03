@@ -1,6 +1,7 @@
 import { decodeGlobalID } from '@pothos/plugin-relay';
 import { prisma } from '~/lib/prisma.server';
 import { builder } from '../../builder';
+import { GetUserArgs } from './dto/args/get-user-args.dto';
 
 // クエリフィールドを定義
 builder.queryFields((t) => ({
@@ -10,10 +11,17 @@ builder.queryFields((t) => ({
     nullable: true, // フィールドがnullを返すことができるかどうかを設定
     // クエリ引数を定義
     args: {
-      id: t.arg.id({ required: true }), // 'id' 引数を必須として定義（ID型）
+      args: t.arg({
+        type: GetUserArgs,
+        required: true,
+      }),
+    },
+    authScopes: {
+      admin: true,
+      member: true,
     },
     // フィールドの解決関数
-    resolve: (query, _, args) => {
+    resolve: (query, _, { args }) => {
       const { id: rawId } = decodeGlobalID(args.id); // Relay 形式のグローバルID をデコードしてDBのIDの形式を取り出す
       return prisma.user.findUnique({
         ...query, // Prismaのクエリオブジェクトを展開して使用（フィルタリング、ソートなど）
@@ -26,6 +34,9 @@ builder.queryFields((t) => ({
   users: t.prismaConnection({
     type: 'User', // フィールドの戻り値の型を 'User' に設定
     cursor: 'id', // ページネーションのためのカーソルを 'id' フィールドに設定
+    authScopes: {
+      admin: true,
+    },
     // フィールドの解決関数
     resolve: (query) => prisma.user.findMany({ ...query }), // Prismaのクエリオブジェクトを展開して使用
     // 総ユーザー数を取得する関数

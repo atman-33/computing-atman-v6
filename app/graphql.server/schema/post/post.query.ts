@@ -1,21 +1,28 @@
+import { decodeGlobalID } from '@pothos/plugin-relay';
 import { builder } from '~/graphql.server/builder';
 import { prisma } from '~/lib/prisma.server';
+import { GetPostArgs } from './dto/args/get-post-args.dto';
 
 builder.queryFields((t) => ({
+  /** post */
   post: t.prismaField({
     type: 'Post',
     nullable: true,
     args: {
-      id: t.arg.id({ required: true }),
+      args: t.arg({
+        type: GetPostArgs,
+        required: true,
+      }),
     },
-    resolve: async (query, _, args) => {
-      const { id } = { id: args.id };
+    resolve: async (query, _, { args }) => {
+      const { id: rawId } = decodeGlobalID(args.id);
       return await prisma.post.findUnique({
         ...query,
-        where: { id },
+        where: { id: rawId },
       });
     },
   }),
+  /** posts */
   posts: t.prismaConnection({
     type: 'Post',
     cursor: 'id',

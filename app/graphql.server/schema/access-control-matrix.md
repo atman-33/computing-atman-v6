@@ -1,18 +1,19 @@
 # GraphQL Access Control Matrix
 
-| Operations | Type     | ADMIN | MEMBER | Unauthenticated |
-| ---------- | -------- | ----- | ------ | --------------- |
-| login      | Mutation | ✅     | ✅      | ✅               |
-| logout     | Mutation | ✅     | ✅      | ✅               |
-| users      | Query    | ✅     | ❌      | ❌               |
-| user       | Query    | ✅     | ✅ (*1) | ❌               |
-| createUser | Mutation | ❌     | ❌      | ✅               |
-| updateUser | Mutation | ✅     | ✅ (*1) | ❌               |
-| deleteUser | Mutation | ✅     | ❌      | ❌               |
-| posts      | Query    | ✅     | ✅      | ✅               |
-| post       | Query    | ✅     | ✅      | ✅               |
-| createPost | Mutation | ✅     | ✅      | ❌               |
-| updatePost | Mutation | ✅     | ✅      | ❌               |
-| deletePost | Mutation | ✅     | ✅      | ❌               |
+| Operations     | Type     | ADMIN | MEMBER | Unauthenticated |
+| -------------- | -------- | ----- | ------ | --------------- |
+| login          | Mutation | ✅     | ✅      | ✅               |
+| logout         | Mutation | ✅     | ✅      | ✅               |
+| user (*1)      | Query    | ✅     | ✅      | ❌               |
+| users (*1)     | Query    | ✅     | ❌      | ❌               |
+| createUser     | Mutation | ✅     | ✅      | ✅               |
+| updateUser     | Mutation | ✅     | ✅      | ❌               |
+| updateUserRole | Mutation | ✅     | ❌      | ❌               |
+| deleteUser     | Mutation | ✅     | ❌      | ❌               |
+| post           | Query    | ✅     | ✅      | ✅               |
+| posts          | Query    | ✅     | ✅      | ✅               |
+| createPost     | Mutation | ✅     | ✅      | ❌               |
+| updatePost     | Mutation | ✅     | ✅      | ❌               |
+| deletePost     | Mutation | ✅     | ✅      | ❌               |
 
-- *1: ログインユーザーと同じユーザーの情報のみ取得/操作可能
+- *1: user.emailは、ログイン状態でのみ取得可能

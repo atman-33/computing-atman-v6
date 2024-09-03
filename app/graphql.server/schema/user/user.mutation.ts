@@ -2,32 +2,45 @@ import { decodeGlobalID } from '@pothos/plugin-relay';
 import { prisma } from '~/lib/prisma.server';
 import { hashPassword } from '~/utils/auth-utils';
 import { builder } from '../../builder';
-
-// ユーザーロールを定義
-const UserRole = builder.enumType('UserRole', {
-  values: ['MEMBER', 'ADMIN'] as const,
-});
-
-// UpdateUserInput Dtoを定義
-const UpdateUserInput = builder.inputType('UpdateUserInput', {
-  fields: (t) => ({
-    id: t.string({ required: true }),
-    name: t.string({ required: false }),
-    email: t.string({ required: false }),
-    role: t.field({ type: UserRole, required: false }),
-    password: t.string({ required: false }),
-  }),
-});
-
-// DeleteUserInput Dtoを定義
-const DeleteUserInput = builder.inputType('DeleteUserInput', {
-  fields: (t) => ({
-    id: t.string({ required: true }),
-  }),
-});
+import { CreateUserInput } from './dto/input/create-user-input.dto';
+import { DeleteUserInput } from './dto/input/delete-user-input.dto';
+import { UpdateUserInput } from './dto/input/update-user-input.dto';
 
 // ミューテーションフィールドを定義
 builder.mutationFields((t) => ({
+  createUser: t.prismaField({
+    type: 'User',
+    nullable: false,
+    args: {
+      input: t.arg({
+        type: CreateUserInput,
+        required: true,
+      }),
+    },
+    resolve: async (query, _, { input }) => {
+      // バリデーションチェック: パスワードは4文字以上であること
+      if (input.password.length < 4) {
+        throw new Error('Password must be at least 4 characters long');
+      }
+
+      const createdUser = await prisma.user.create({
+        data: {
+          email: input.email,
+          name: input.name,
+          role: input.role,
+        },
+      });
+
+      await prisma.password.create({
+        data: {
+          userId: createdUser.id,
+          hashed: await hashPassword(input.password),
+        },
+      });
+
+      return createdUser;
+    },
+  }),
   // ユーザー情報を更新するためのミューテーションフィールド 'updateUser' を定義
   updateUser: t.prismaField({
     type: 'User', // 戻り値の型を 'User' に設定
@@ -41,30 +54,30 @@ builder.mutationFields((t) => ({
     },
     authScopes: { loggedIn: true },
     // フィールドの解決関数
-    resolve: async (query, _, args) => {
-      // 'password' の更新が指定された場合はハッシュ化（例: bcrypt など）
-      const hashedPassword = args.input.password
-        ? await hashPassword(args.input.password)
-        : undefined;
+    resolve: async (query, _, { input }, ctx) => {
+      if (!ctx.user) {
+        throw new Error('required ctx.user');
+      }
 
-      const { id: rawId } = decodeGlobalID(args.input.id); // Relay 形式のグローバルID をデコードしてDBのIDの形式を取り出す
+      // 'password' の更新が指定された場合はハッシュ化（例: bcrypt など）
+      const hashedPassword = input.password ? await hashPassword(input.password) : undefined;
+
       // ユーザー情報を更新
       const updatedUser = await prisma.user.update({
         ...query, // Prismaのクエリオブジェクトを展開して使用
-        where: { id: rawId }, // 更新対象のユーザーIDで検索
+        where: { id: ctx.user.id }, // 更新対象のユーザーIDで検索
         data: {
-          name: args.input.name ?? undefined, // 'name' を更新（指定されていない場合は更新しない）
-          email: args.input.email ?? undefined, // 'email' を更新（指定されていない場合は更新しない）
-          role: args.input.role ?? undefined, // 'role' を更新（指定されていない場合は更新しない）
+          name: input.name ?? undefined, // 'name' を更新（指定されていない場合は更新しない）
+          email: input.email ?? undefined, // 'email' を更新（指定されていない場合は更新しない）
         },
       });
 
       // 'password' が指定されている場合、Passwordモデルを更新
       if (hashedPassword) {
         await prisma.password.upsert({
-          where: { userId: rawId }, // ユーザーIDで検索
+          where: { userId: ctx.user.id }, // ユーザーIDで検索
           update: { hashed: hashedPassword }, // 既存レコードがある場合は更新
-          create: { userId: args.input.id, hashed: hashedPassword }, // ない場合は新規作成
+          create: { userId: ctx.user.id, hashed: hashedPassword }, // ない場合は新規作成
         });
       }
 
@@ -83,9 +96,12 @@ builder.mutationFields((t) => ({
         required: true,
       }),
     },
+    authScopes: {
+      admin: true,
+    },
     // フィールドの解決関数
-    resolve: async (query, _, args) => {
-      const { id: rawId } = decodeGlobalID(args.input.id); // Relay 形式のグローバルID をデコードしてDBのIDの形式を取り出す
+    resolve: async (query, _, { input }) => {
+      const { id: rawId } = decodeGlobalID(input.id); // Relay 形式のグローバルID をデコードしてDBのIDの形式を取り出す
       return prisma.user.delete({
         ...query, // Prismaのクエリオブジェクトを展開して使用
         where: { id: rawId }, // 削除対象のユーザーIDで検索

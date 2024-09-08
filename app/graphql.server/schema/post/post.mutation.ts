@@ -1,8 +1,9 @@
 import { decodeGlobalID } from '@pothos/plugin-relay';
 import { builder } from '~/graphql.server/builder';
 import { prisma } from '~/lib/prisma.server';
-import { CreatePostInput } from './dto/input/create-post-args.dto';
-import { UpdatePostInput } from './dto/input/update-post-args.dto';
+import { CreatePostInput } from './dto/input/create-post-input.dto';
+import { DeletePostInput } from './dto/input/delete-post-input.dto';
+import { UpdatePostInput } from './dto/input/update-post-input.dto';
 
 builder.mutationFields((t) => ({
   /**
@@ -23,7 +24,7 @@ builder.mutationFields((t) => ({
         throw new Error('required ctx.user');
       }
 
-      const createdPost = prisma.post.create({
+      return prisma.post.create({
         ...query,
         data: {
           title: input.title,
@@ -31,8 +32,6 @@ builder.mutationFields((t) => ({
           authorId: ctx.user.id,
         },
       });
-
-      return createdPost;
     },
   }),
 
@@ -49,13 +48,9 @@ builder.mutationFields((t) => ({
       }),
     },
     authScopes: { loggedIn: true },
-    resolve: async (query, _, { input }, ctx) => {
-      if (!ctx.user) {
-        throw new Error('required ctx.user');
-      }
-
+    resolve: async (query, _, { input }) => {
       const { id: rawId } = decodeGlobalID(input.id);
-      const updatedPost = prisma.post.update({
+      return prisma.post.update({
         ...query,
         where: {
           id: rawId,
@@ -66,8 +61,27 @@ builder.mutationFields((t) => ({
           status: input.status,
         },
       });
-
-      return updatedPost;
+    },
+  }),
+  /**
+   * deletePost
+   */
+  deletePost: t.prismaField({
+    type: 'Post',
+    nullable: true,
+    args: {
+      input: t.arg({
+        type: DeletePostInput,
+        required: true,
+      }),
+    },
+    authScopes: { loggedIn: true },
+    resolve: async (query, _, { input }) => {
+      const { id: rawId } = decodeGlobalID(input.id);
+      return await prisma.post.delete({
+        ...query,
+        where: { id: rawId },
+      });
     },
   }),
 }));

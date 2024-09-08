@@ -4,7 +4,9 @@ import { prisma } from '~/lib/prisma.server';
 import { GetPostArgs } from './dto/args/get-post-args.dto';
 
 builder.queryFields((t) => ({
-  /** post */
+  /**
+   * post
+   */
   post: t.prismaField({
     type: 'Post',
     nullable: true,
@@ -22,7 +24,9 @@ builder.queryFields((t) => ({
       });
     },
   }),
-  /** posts */
+  /**
+   * posts
+   */
   posts: t.prismaConnection({
     type: 'Post',
     cursor: 'id',

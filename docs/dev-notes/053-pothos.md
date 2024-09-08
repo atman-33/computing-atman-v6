@@ -227,7 +227,7 @@ builder.mutationFields((t) => ({
     // フィールドの解決関数
     resolve: async (query, _, args) => {
       const { id: rawId } = decodeGlobalID(args.input.id); // Relay 形式のグローバルID をデコードしてDBのIDの形式を取り出す
-      return prisma.user.delete({
+      return await prisma.user.delete({
         ...query, // Prismaのクエリオブジェクトを展開して使用
         where: { id: rawId }, // 削除対象のユーザーIDで検索
       });

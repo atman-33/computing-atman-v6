@@ -24,14 +24,31 @@ builder.mutationFields((t) => ({
         throw new Error('required ctx.user');
       }
 
-      return prisma.post.create({
+      const createdPost = await prisma.post.create({
         ...query,
         data: {
           title: input.title,
+          emoji: input.emoji,
           content: input.content,
           authorId: ctx.user.id,
         },
       });
+
+      // タグが存在する場合、PostTagを作成
+      if (input.tagIds && input.tagIds.length > 0) {
+        // tagsの配列からPostTagのデータを作成
+        const postTagsData = input.tagIds.map((tagId) => ({
+          postId: createdPost.id,
+          tagId: tagId,
+        }));
+
+        // PostTagを一度に作成
+        await prisma.postTag.createMany({
+          data: postTagsData,
+        });
+      }
+
+      return createdPost;
     },
   }),
 
@@ -50,17 +67,43 @@ builder.mutationFields((t) => ({
     authScopes: { loggedIn: true },
     resolve: async (query, _, { input }) => {
       const { id: rawId } = decodeGlobalID(input.id);
-      return prisma.post.update({
+      const updatedPost = await prisma.post.update({
         ...query,
         where: {
           id: rawId,
         },
         data: {
           title: input.title,
+          emoji: input.emoji,
           content: input.content,
-          status: input.status,
+          published: input.published,
         },
       });
+
+      // タグの更新処理
+      if (input.tagIds) {
+        // 既存のPostTagを削除
+        await prisma.postTag.deleteMany({
+          where: {
+            postId: rawId,
+          },
+        });
+
+        // 新しいタグが指定されている場合、新たにPostTagを作成
+        if (input.tagIds.length > 0) {
+          const postTagsData = input.tagIds.map((tagId) => ({
+            postId: rawId,
+            tagId: tagId,
+          }));
+
+          // PostTagを一度に作成
+          await prisma.postTag.createMany({
+            data: postTagsData,
+          });
+        }
+      }
+
+      return updatedPost;
     },
   }),
   /**

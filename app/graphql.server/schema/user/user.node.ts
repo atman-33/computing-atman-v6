@@ -5,9 +5,11 @@ builder.prismaNode('User', {
   id: { field: 'id' }, // ノードのIDフィールドをUserモデルの'id'フィールドにマップ
   fields: (t) => ({
     name: t.exposeString('name'), // Userモデルの'name'フィールドをGraphQLでString型として公開
-    email: t.exposeString('email', {
+    email: t.exposeString(
+      'email' /*, {
       authScopes: { admin: true, member: true },
-    }),
+    }*/,
+    ),
     role: t.exposeString('role'),
     // Userモデルの'relation'フィールド(posts)をページネーション可能な接続として公開
     posts: t.relatedConnection('posts', {

@@ -4,8 +4,8 @@
 | -------------- | -------- | ----- | ------ | --------------- |
 | login          | Mutation | ✅     | ✅      | ✅               |
 | logout         | Mutation | ✅     | ✅      | ✅               |
-| user (*1)      | Query    | ✅     | ✅      | ❌               |
-| users (*1)     | Query    | ✅     | ❌      | ❌               |
+| user           | Query    | ✅     | ✅      | ❌               |
+| users          | Query    | ✅     | ❌      | ❌               |
 | createUser     | Mutation | ✅     | ✅      | ✅               |
 | updateUser     | Mutation | ✅     | ✅      | ❌               |
 | updateUserRole | Mutation | ✅     | ❌      | ❌               |
@@ -15,5 +15,3 @@
 | createPost     | Mutation | ✅     | ✅      | ❌               |
 | updatePost     | Mutation | ✅     | ✅      | ❌               |
 | deletePost     | Mutation | ✅     | ✅      | ❌               |
-
-- *1: user.emailは、ログイン状態でのみ取得可能

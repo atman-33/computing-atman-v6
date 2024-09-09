@@ -15,3 +15,8 @@
 | createPost     | Mutation | ✅     | ✅      | ❌               |
 | updatePost     | Mutation | ✅     | ✅      | ❌               |
 | deletePost     | Mutation | ✅     | ✅      | ❌               |
+| tag            | Query    | ✅     | ✅      | ✅               |
+| tags           | Query    | ✅     | ✅      | ✅               |
+| createUser     | Mutation | ✅     | ❌      | ❌               |
+| updateUser     | Mutation | ✅     | ❌      | ❌               |
+| deleteUser     | Mutation | ✅     | ❌      | ❌               |

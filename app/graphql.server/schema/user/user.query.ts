@@ -21,9 +21,9 @@ builder.queryFields((t) => ({
       member: true,
     },
     // フィールドの解決関数
-    resolve: (query, _, { args }) => {
+    resolve: async (query, _, { args }) => {
       const { id: rawId } = decodeGlobalID(args.id); // Relay 形式のグローバルID をデコードしてDBのIDの形式を取り出す
-      return prisma.user.findUnique({
+      return await prisma.user.findUnique({
         ...query, // Prismaのクエリオブジェクトを展開して使用（フィルタリング、ソートなど）
         where: { id: rawId }, // ユーザーのIDで検索
       });
@@ -38,7 +38,7 @@ builder.queryFields((t) => ({
       admin: true,
     },
     // フィールドの解決関数
-    resolve: (query) => prisma.user.findMany({ ...query }), // Prismaのクエリオブジェクトを展開して使用
+    resolve: async (query) => await prisma.user.findMany({ ...query }), // Prismaのクエリオブジェクトを展開して使用
     // 総ユーザー数を取得する関数
     totalCount: () => prisma.user.count(), // Prismaクライアントを使って、ユーザーの総数をカウント
   }),

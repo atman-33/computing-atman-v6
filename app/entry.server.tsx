@@ -11,11 +11,41 @@ import { createReadableStreamFromReadable } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
+import { prisma } from './lib/prisma.server';
+import { hashPassword } from './utils/auth-utils';
+
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- //
 
 // 開発向けにgraphiqlエンドポイントを表示
 console.log(
   `🚀 Application playground is running on: http://localhost:${process.env.PORT}/api/graphql`,
 );
+
+// adminユーザーを追加
+const admin = await prisma.user.findUnique({
+  where: {
+    email: 'admin@example.com',
+  },
+});
+
+if (!admin) {
+  const hashedPassword = await hashPassword('admin');
+  await prisma.user.create({
+    data: {
+      name: 'admin',
+      email: 'admin@example.com',
+      role: 'ADMIN',
+      password: {
+        create: {
+          hashed: hashedPassword,
+        },
+      },
+    },
+  });
+  console.log('admin user created!');
+}
+
+// ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- //
 
 const ABORT_DELAY = 5_000;
 

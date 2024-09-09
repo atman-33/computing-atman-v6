@@ -11,6 +11,6 @@ builder.prismaNode('Post', {
     author: t.relation('author'),
     createdAt: t.expose('createdAt', { type: 'DateTime' }),
     updatedAt: t.expose('updatedAt', { type: 'DateTime' }),
-    // tags: t.relation('tags'),
+    tags: t.relation('tags'),
   }),
 });

@@ -40,5 +40,5 @@ module.exports = {
 
 ```text
 # shadcn/ui
-app/components/ui
+app/components/shadcn/ui
 ```

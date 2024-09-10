@@ -3,8 +3,8 @@ import { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { useCookies } from '@whatwg-node/server-plugin-cookies';
 import { createYoga } from 'graphql-yoga';
 import { CookieKeys } from '~/constants/cookie-keys';
-import { schema } from '~/graphql.server/schema';
-import { prisma } from '~/lib/prisma.server';
+import { schema } from '~/libs/server/graphql/schema';
+import { prisma } from '~/libs/server/prisma';
 import { jwtVerify } from '~/utils/auth-utils';
 
 // NOTE: createYogaで生成したインスタンスはシングルトンとして利用される。

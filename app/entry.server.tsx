@@ -11,7 +11,7 @@ import { createReadableStreamFromReadable } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
-import { createAdminUser } from './lib/create-admin-user.server';
+import { createAdminUser } from './libs/server/create-admin-user';
 
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- //
 

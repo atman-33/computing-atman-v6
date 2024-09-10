@@ -34,7 +34,7 @@ npx prisma generate
 
 ### スキーマビルダー実装
 
-`app/graphql.server/builder.ts`
+`app/libs/server/graphql/builder.ts`
 
 ```ts
 import SchemaBuilder from '@pothos/core';
@@ -43,7 +43,7 @@ import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import RelayPlugin from '@pothos/plugin-relay';
 import { Prisma } from '@prisma/client';
 import { DateTimeResolver } from 'graphql-scalars';
-import { prisma } from '~/lib/prisma.server';
+import { prisma } from '~/libs/server/prisma';
 
 export const builder = new SchemaBuilder<{
   Scalars: {
@@ -75,7 +75,7 @@ builder.addScalarType('DateTime', DateTimeResolver, {});
 
 #### GrqphQLノードを実装
 
-`app/graphql.server/schema/user/user.node.ts`
+`app/libs/server/graphql/schema/user/user.node.ts`
 
 ```ts
 import { builder } from '../../builder';
@@ -96,11 +96,11 @@ builder.prismaNode('User', {
 
 #### クエリフィールドを実装
 
-`app/graphql.server/schema/user/user.query.ts`
+`app/libs/server/graphql/schema/user/user.query.ts`
 
 ```ts
 import { decodeGlobalID } from '@pothos/plugin-relay';
-import { prisma } from '~/lib/prisma.server';
+import { prisma } from '~/libs/server/prisma';
 import { builder } from '../../builder';
 
 // クエリフィールドを定義
@@ -137,11 +137,11 @@ builder.queryFields((t) => ({
 
 #### ミューテーションフィールドを実装
 
-`app/graphql.server/schema/user/user.mutation.ts`
+`app/libs/server/graphql/schema/user/user.mutation.ts`
 
 ```ts
 import { decodeGlobalID } from '@pothos/plugin-relay';
-import { prisma } from '~/lib/prisma.server';
+import { prisma } from '~/libs/server/prisma';
 import { hashPassword } from '~/utils/auth-utils';
 import { builder } from '../../builder';
 
@@ -238,7 +238,7 @@ builder.mutationFields((t) => ({
 
 ### スキーマビルダーでGraphQLスキーマを生成
 
-`app/graphql.server/schema/index.ts`
+`app/libs/server/graphql/schema/index.ts`
 
 ```ts
 import { builder } from '../builder';

@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '~/components/shadcn/ui/table';
-import { graphql } from '~/gql';
+import { graphql } from '~/lib/gql/@generated';
 import { initializeClient } from '~/lib/server/graphql-client';
 
 const getTagsGql = graphql(`

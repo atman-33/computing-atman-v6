@@ -53,7 +53,7 @@ const yoga = createYoga({
 
 Contextにログイン済みのユーザー情報を保存する。  
 
-`app/libs/server/graphql/context.ts`
+`app/lib/server/graphql/context.ts`
 
 ```ts
 import { User } from '@prisma/client';
@@ -64,7 +64,7 @@ export interface Context extends YogaInitialContext {
 }
 ```
 
-`app/libs/server/graphql/builder.ts`
+`app/lib/server/graphql/builder.ts`
 
 ```ts
 import { Context } from './context';
@@ -86,7 +86,7 @@ export const builder = new SchemaBuilder<{
 
 ### loginミューテーションを作成
 
-`app/libs/server/graphql/builder.ts`
+`app/lib/server/graphql/builder.ts`
 
 - プラグインに、`SimpleObjectsPlugin`を追加
 
@@ -109,14 +109,14 @@ export const builder = new SchemaBuilder<{
 });
 ```
 
-`app/libs/server/graphql/schema/auth/auth.mutation.ts`
+`app/lib/server/graphql/schema/auth/auth.mutation.ts`
 
 - ログインMutationの戻り値のObjectの定義とログインMutationの処理を追加
 
 ```ts
 import { CookieKeys } from '~/constants/cookie-keys';
-import { builder } from '~/libs/server/graphql/builder';
-import { prisma } from '~/libs/server/prisma';
+import { builder } from '~/lib/server/graphql/builder';
+import { prisma } from '~/lib/server/prisma';
 import { jwtSign, verifyPassword } from '~/utils/auth-utils';
 
 const LoginType = builder.simpleObject('Login', {
@@ -188,7 +188,7 @@ const yoga = createYoga({
 
 ### 認可処理を追加
 
-`app/libs/server/graphql/builder.ts`
+`app/lib/server/graphql/builder.ts`
 
 - AutoScopesを追加
 - pluginsに、ScopeAuthPluginを追加
@@ -222,7 +222,7 @@ export const builder = new SchemaBuilder<{
 
 - フィールドに対してスコープを設定する。
 
-`app/libs/server/graphql/schema/user/user.node.ts`
+`app/lib/server/graphql/schema/user/user.node.ts`
 
 ```ts
 builder.prismaNode('User', {
@@ -243,7 +243,7 @@ builder.prismaNode('User', {
 
 - QueryやMutationに対してスコープを設定する。
 
-`app/libs/server/graphql/schema/user/user.mutation.ts`
+`app/lib/server/graphql/schema/user/user.mutation.ts`
 
 ```ts
 builder.mutationFields((t) => ({

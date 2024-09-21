@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '~/components/shadcn/ui/table';
 import { graphql } from '~/gql';
-import { initializeClient } from '~/libs/server/graphql-client';
+import { initializeClient } from '~/lib/server/graphql-client';
 
 const getTagsGql = graphql(`
   query getTags {

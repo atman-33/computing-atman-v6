@@ -16,7 +16,7 @@
 import fs from 'fs';
 import { lexicographicSortSchema, printSchema } from 'graphql';
 import path from 'path';
-import { schema } from '~/libs/server/graphql/schema';
+import { schema } from '~/lib/server/graphql/schema';
 
 const main = async () => {
   const outputFile = './codegen/schema.graphql';

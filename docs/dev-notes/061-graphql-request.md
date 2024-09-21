@@ -10,7 +10,7 @@ npm i graphql-request
 
 ### Clientを作成
 
-`app/libs/server/graphql-client.ts`
+`app/lib/server/graphql-client.ts`
 
 ```ts
 import { GraphQLClient } from 'graphql-request';
@@ -48,7 +48,7 @@ import {
   TableRow,
 } from '~/components/shadcn/ui/table';
 import { graphql } from '~/gql';
-import { initializeClient } from '~/libs/server/graphql-client';
+import { initializeClient } from '~/lib/server/graphql-client';
 
 const getTagsGql = graphql(`
   query getTags {

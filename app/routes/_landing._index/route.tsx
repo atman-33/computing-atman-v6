@@ -4,7 +4,7 @@ import { Button } from '~/components/shadcn/ui/button';
 const LandingPage = () => {
   return (
     <>
-      <Link to="poc/md-edit">
+      <Link to="poc">
         <Button>POC</Button>
       </Link>
     </>

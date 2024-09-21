@@ -1,4 +1,27 @@
-# Welcome to Remix!
+# Computing Atman v6
+
+## 技術スタック
+
+### フロントエンド（client）
+
+| パッケージ   | 説明                     |
+| ------------ | ------------------------ |
+| Tailwind CSS | CSSフレームワーク        |
+| shadcn/ui    | コンポーネントライブラリ |
+| Zod          | バリデーションライブラリ |
+| Storybook    | UIコンポーネント開発環境 |
+
+### バックエンド（server）
+
+| パッケージ   | 説明           |
+| ------------ | -------------- |
+| Prisma       | ORMライブラリ  |
+| Graphal Yoga | GraphQLサーバ |
+| Pothos GraphQL | GraphQLスキーマビルダー |
+| GraphQL Codegen | GraphQLスキーマからコード生成 |
+| graphql-request | GraphQLクライアントライブラリ |
+
+<!-- # Welcome to Remix
 
 - 📖 [Remix docs](https://remix.run/docs)
 
@@ -37,4 +60,4 @@ Make sure to deploy the output of `npm run build`
 
 ## Styling
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information. -->

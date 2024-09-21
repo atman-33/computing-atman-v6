@@ -9,17 +9,38 @@ npx shadcn-ui@latest init
 ```
 
 ```sh
-✔ Would you like to use TypeScript (recommended)? … yes
 ✔ Which style would you like to use? › Default
-✔ Which color would you like to use as base color? › Slate
-✔ Where is your global CSS file? … app/tailwind.css
-✔ Would you like to use CSS variables for colors? … yes
-✔ Are you using a custom tailwind prefix eg. tw-? (Leave blank if not) … 
-✔ Where is your tailwind.config.js located? … tailwind.config.js
-✔ Configure the import alias for components: … ~/components/shadcn
-✔ Configure the import alias for utils: … ~/utils/cn
-✔ Are you using React Server Components? … no
-✔ Write configuration to components.json. Proceed? … yes
+✔ Which color would you like to use as the base color? › Zinc
+✔ Would you like to use CSS variables for theming? … yes
+```
+
+- `lib/utils.ts`を`utils/cn.ts`に移動する（合わせてファイル名も変更）。
+
+### components.jsonを変更
+
+`components.json`
+
+```json
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "default",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "tailwind.config.js",
+    "css": "app/tailwind.css",
+    "baseColor": "zinc",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "~/components/shadcn",
+    "utils": "~/utils/cn",
+    "ui": "~/components/shadcn/ui",
+    "lib": "~/lib",
+    "hooks": "~/hooks"
+  }
+}
 ```
 
 ## eslint, prettier無視の設定

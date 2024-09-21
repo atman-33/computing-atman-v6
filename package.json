@@ -16,8 +16,8 @@
     "db:studio": "npx env-cmd -f .env npx prisma studio",
     "db:seed": "npx tsx prisma/seed.ts",
     "---- GRAPHQL SECTION ----": "---- ---- ---- ---- ----",
-    "graphql:schema": "tsx ./tools/export-schema.ts",
-    "graphql:codegen": "graphql-codegen -c codegen/codegen.ts --watch",
+    "graphql:schema": "tsx ./tools/graphql-codegen/export-schema.ts",
+    "graphql:codegen": "graphql-codegen -c tools/graphql-codegen/codegen.ts --watch",
     "---- TEST SECTION ----": "---- ---- ---- ---- ----",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"

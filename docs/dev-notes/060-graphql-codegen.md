@@ -10,7 +10,7 @@
 
 - GraphQLスキーマ出力処理を追加する。
 
-`tools/export-schema.ts`
+`tools/graphql-codegen/export-schema.ts`
 
 ```ts
 import fs from 'fs';
@@ -19,7 +19,7 @@ import path from 'path';
 import { schema } from '~/lib/server/graphql/schema';
 
 const main = async () => {
-  const outputFile = './codegen/schema.graphql';
+  const outputFile = './tools/graphql-codegen/schema.graphql';
 
   const schemaAsString = printSchema(lexicographicSortSchema(schema));
   await fs.writeFileSync(outputFile, schemaAsString);
@@ -35,7 +35,7 @@ main();
   "scripts": {
     // ...
     "---- GRAPHQL SECTION ----": "---- ---- ---- ---- ----",
-    "graphql:schema": "tsx ./tools/export-schema.ts",
+    "graphql:schema": "tsx ./tools/graphql-codegen/export-schema.ts",
 ```
 
 ### インストール
@@ -49,13 +49,13 @@ npm install -D @parcel/watcher
 
 ### codegen configファイルを作成
 
-`codegen/codegen.ts`
+`tools/graphql-codegen/codegen.ts`
 
 ```ts
 import { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
-  schema: 'codegen/schema.graphql',
+  schema: 'tools/graphql-codegen/schema.graphql',
   overwrite: true,
   documents: ['app/**/*.tsx', 'app/**/*.ts'],
   ignoreNoDocuments: true, // for better experience with the watcher
@@ -80,5 +80,5 @@ export default config;
 ```json
   "scripts": {
     // ...
-    "graphql:codegen": "graphql-codegen -c codegen/codegen.ts --watch",
+    "graphql:codegen": "graphql-codegen -c tools/graphql-codegen/codegen.ts --watch",
 ```

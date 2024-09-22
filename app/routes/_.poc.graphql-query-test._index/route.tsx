@@ -1,4 +1,5 @@
-import { json, useLoaderData } from '@remix-run/react';
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import { ClientError } from 'graphql-request';
 import {
   Table,
@@ -11,6 +12,7 @@ import {
 } from '~/components/shadcn/ui/table';
 import { graphql } from '~/lib/gql/@generated';
 import { initializeClient } from '~/lib/server/graphql-client';
+import { unknownError } from '~/utils/unknown-error';
 
 const getTagsGql = graphql(`
   query getTags {
@@ -41,10 +43,12 @@ export const loader = async () => {
           },
         );
       }
+
+      return unknownError(error);
     });
 };
 
-const GraphqlTestPage = () => {
+const GraphqlQueryTestPage = () => {
   const tags = useLoaderData<typeof loader>();
 
   if (!tags || 'errorType' in tags) {
@@ -82,4 +86,4 @@ const GraphqlTestPage = () => {
   );
 };
 
-export default GraphqlTestPage;
+export default GraphqlQueryTestPage;

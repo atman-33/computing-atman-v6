@@ -1,12 +1,11 @@
-import { ActionFunctionArgs, json } from '@remix-run/node';
-import { useActionData } from '@remix-run/react';
-import { ClientError } from 'graphql-request';
+import { ActionFunctionArgs } from '@remix-run/node';
+import { isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import { useEffect } from 'react';
 import { Button } from '~/components/shadcn/ui/button';
 import { Input } from '~/components/shadcn/ui/input';
 import { graphql } from '~/lib/gql/@generated';
 import { initializeClient } from '~/lib/server/graphql-client';
-import { unknownError } from '~/utils/unknown-error';
+import { createErrorResponse } from '~/utils/create-error-response';
 
 const loginGql = graphql(`
   mutation login($email: String!, $password: String!) {
@@ -32,30 +31,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       // return redirect('/dashboard'); // 成功時のリダイレクト先
     })
     .catch((error) => {
-      if (error instanceof ClientError) {
-        return json(
-          {
-            errorType: 'ClientError',
-            error: error,
-          },
-          {
-            status: 400,
-          },
-        );
-      }
-      return unknownError(error);
+      throw createErrorResponse(error);
     });
 };
 
 const GraphqlAuthTestPage = () => {
-  const data = useActionData<typeof action>();
+  // const data = useActionData<typeof action>();
+  const error = useRouteError();
 
   useEffect(() => {
-    if (data?.errorType) {
-      console.log(data);
-      console.log(data.error.response.errors?.at(0));
+    if (isRouteErrorResponse(error)) {
+      console.log(error);
     }
-  }, [data]);
+  }, [error]);
 
   return (
     <form method="post" className="flex flex-col gap-4">

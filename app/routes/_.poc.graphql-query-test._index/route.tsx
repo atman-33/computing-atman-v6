@@ -1,6 +1,5 @@
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
-import { ClientError } from 'graphql-request';
+import { isRouteErrorResponse, useLoaderData, useRouteError } from '@remix-run/react';
 import {
   Table,
   TableBody,
@@ -12,7 +11,7 @@ import {
 } from '~/components/shadcn/ui/table';
 import { graphql } from '~/lib/gql/@generated';
 import { initializeClient } from '~/lib/server/graphql-client';
-import { unknownError } from '~/utils/unknown-error';
+import { createErrorResponse } from '~/utils/create-error-response';
 
 const getTagsGql = graphql(`
   query getTags {
@@ -32,27 +31,16 @@ export const loader = async () => {
       return json(tags);
     })
     .catch((error) => {
-      if (error instanceof ClientError) {
-        return json(
-          {
-            errorType: 'ClientError',
-            error,
-          },
-          {
-            status: 400,
-          },
-        );
-      }
-
-      return unknownError(error);
+      throw createErrorResponse(error);
     });
 };
 
 const GraphqlQueryTestPage = () => {
   const tags = useLoaderData<typeof loader>();
+  const error = useRouteError();
 
-  if (!tags || 'errorType' in tags) {
-    return <div>Error: {tags?.error?.message || 'Unknown error'}</div>;
+  if (isRouteErrorResponse(error)) {
+    return <div>Error: {error.data || 'Unknown error'}</div>;
   }
 
   return (

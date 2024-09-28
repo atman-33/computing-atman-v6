@@ -31,6 +31,7 @@ export const loader = async () => {
       return json(tags);
     })
     .catch((error) => {
+      // エラーレスポンスをthrowする場合
       throw createErrorResponse(error);
     });
 };

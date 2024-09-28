@@ -14,11 +14,11 @@ const pocs: PocPageInfo[] = [
     target: '_blank',
   },
   {
-    link: '/poc/graphql-auth-test',
+    link: '/poc/graphql-auth',
     description: 'GraphQLテスト（Auth）',
   },
   {
-    link: '/poc/graphql-query-test',
+    link: '/poc/graphql-query',
     description: 'GraphQLテスト（Query）',
   },
   {

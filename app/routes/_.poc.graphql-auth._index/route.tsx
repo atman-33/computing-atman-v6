@@ -19,7 +19,7 @@ const loginGql = graphql(`
 `);
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const client = await initializeClient(undefined);
+  const client = await initializeClient(request);
   const formData = await request.formData();
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;

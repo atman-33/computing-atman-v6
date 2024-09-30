@@ -16,6 +16,7 @@ export const verifyPassword = (args: { rawPassword: string; hashedPassword: stri
 export const jwtSign = (userId: string, payload: object = {}) => {
   return jwt.sign(payload, env.JWT_SECRET, {
     subject: encodeGlobalID('User', userId),
+    expiresIn: env.JWT_EXPIRATION,
   });
 };
 

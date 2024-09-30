@@ -56,9 +56,9 @@ const GraphqlAuthTestPage = () => {
   useEffect(() => {
     if (data && !data.success) {
       console.log(data);
-      setErrorMessage(data.error ?? '');
+      setErrorMessage(data.message ?? '');
 
-      // TODO: この処理ではなく、useFetcherを利用する方がよいはず
+      // NOTE: 画面遷移しない場合は、useFetcherを利用してもOK
       setEmail(data.data?.email ?? '');
       setPassword(data.data?.password ?? '');
     }

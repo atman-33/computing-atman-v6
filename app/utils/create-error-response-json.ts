@@ -19,7 +19,7 @@ export const createErrorResponseJson = <T>(error: any, data?: T) => {
   if (data) {
     return json<ErrorResponse<T>>({
       success: false,
-      error: message,
+      message,
       status,
       data,
     });

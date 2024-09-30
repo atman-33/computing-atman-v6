@@ -5,7 +5,7 @@ export type SuccessResponse<T = unknown> = {
 
 export type ErrorResponse<T = unknown> = {
   success: false;
-  error: string; // エラーメッセージやエラー情報
+  message: string; // エラーメッセージやエラー情報
   status?: number;
   data?: T;
 };

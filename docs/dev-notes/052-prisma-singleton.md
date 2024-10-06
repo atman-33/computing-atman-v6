@@ -19,7 +19,7 @@ export const singleton = <Value>(name: string, valueFactory: () => Value): Value
 };
 ```
 
-`app/lib/prisma.server.ts`
+`app/lib/server/prisma.ts`
 
 ```ts
 import { PrismaClient } from '@prisma/client';

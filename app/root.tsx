@@ -1,6 +1,6 @@
 import { MetaFunction } from '@remix-run/node';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
-import Header from './components/root/header/header';
+import Header from './components/header/header';
 import './tailwind.css';
 
 export const meta: MetaFunction = () => {
@@ -23,7 +23,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <div className="container">{children}</div>
         <ScrollRestoration />
         <Scripts />
       </body>

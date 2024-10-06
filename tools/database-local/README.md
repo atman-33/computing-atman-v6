@@ -18,19 +18,19 @@ docker-compose -f tools/database-local/docker-compose-dev.yml down --rmi all --v
 
 ### How to delete mongodb collection
 
-- 1. move to mongodb container to operate db  
+#### 1. move to mongodb container to operate db  
 
 ```sh
 docker exec -it mongodb bash
 ```
 
-- 2. connect to mongodb server
+#### 2. connect to mongodb server
 
 ```sh
 mongosh mongodb://localhost:27017
 ```
 
-- 3. delete cllection
+#### 3. delete cllection
 
 ```sh
 db.collection-name.drop()
